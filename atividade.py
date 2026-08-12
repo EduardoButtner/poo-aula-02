@@ -1,5 +1,46 @@
 import os
 
+# ============================
+
+# Classe Médico
+
+# ============================
+
+class Medico:
+    def __init__(self, nome, email, especialidade):
+        self.nome = nome
+        self.email = email
+        self.especialidade = especialidade
+
+    def exibir_info(self):
+        return f"Médico: {self.nome} | Email: {self.email}"
+
+
+# ============================
+
+# Classe Paciente
+
+# ============================
+
+class Paciente:
+    def __init__(self, nome, idade, email):
+        self.nome = nome
+        self.idade = idade
+        self.email = email
+
+    def exibir_info(self):
+        return f"Paciente: {self.nome} | Idade: {self.idade} | Email: {self.email}"
+
+    def marcar_consulta(self, medico, data):
+        return Consulta(data, self, medico)
+
+
+# ============================
+
+# Classe Consulta
+
+# ============================
+
 class Consulta:
     def __init__(self, data, paciente, medico):
         self.data = data
@@ -15,21 +56,24 @@ class Consulta:
         print(f"Data: {self.data}")
         print(f"Paciente: {self.paciente.exibir_info()}")
         print(f"Médico: {self.medico.exibir_info()} - Esp: {self.medico.especialidade}")
+
         if self.diagnostico:
             print(f"Diagnóstico: {self.diagnostico}")
         else:
             print("Diagnóstico: [a definir]")
+
         print("----------------\n")
 
 
 # ============================
+
 # Menu de Linha de Comando
+
 # ============================
 
 medicos = []
 pacientes = []
 consultas = []
-
 
 while True:
 
@@ -44,67 +88,117 @@ while True:
     print("0 - Sair")
 
     opcao = input("Escolha: ")
-    os.system("clear")
 
     # Cadastrar Médico
     if opcao == "1":
-        ####### CRIE O CÓDIGO PARA CADASTRAR MÉDICO
+        nome = input("Nome do médico: ")
+        email = input("Email do médico: ")
+        especialidade = input("Especialidade: ")
+
+        medicos.append(Medico(nome, email, especialidade))
+
         print("Médico cadastrado com sucesso!\n")
+
 
     # Cadastrar Paciente
     elif opcao == "2":
-        ####### CRIE O CÓDICO PARA CADASTRAR PACIENTE
+        nome = input("Nome do paciente: ")
+        idade = int(input("Idade: "))
+        email = input("Email do paciente: ")
+
+        pacientes.append(Paciente(nome, idade, email))
+
         print("Paciente cadastrado com sucesso!\n")
+
 
     # Listar Médicos
     elif opcao == "3":
-        for i, m in enumerate(medicos):
-            print(f"{i} - {m.exibir_info()} | Esp: {m.especialidade}")
-        print()
+        if not medicos:
+            print("Nenhum médico cadastrado!\n")
+        else:
+            for i, m in enumerate(medicos):
+                print(f"{i} - {m.exibir_info()} | Esp: {m.especialidade}")
+
+            print()
+
 
     # Listar Pacientes
     elif opcao == "4":
-        ####### CRIE O CÓDIGO PARA LISTAR PACIENTES
-        print()
+        if not pacientes:
+            print("Nenhum paciente cadastrado!\n")
+        else:
+            for i, p in enumerate(pacientes):
+                print(f"{i} - {p.exibir_info()}")
+
+            print()
+
 
     # Marcar Consulta
     elif opcao == "5":
         if not medicos or not pacientes:
             print("Cadastre médicos e pacientes primeiro!\n")
             continue
+
+        # Escolher paciente
         for i, p in enumerate(pacientes):
             print(f"{i} - {p.exibir_info()}")
+
         idx_p = int(input("Escolha o paciente: "))
         paciente = pacientes[idx_p]
 
+        # Escolher médico
         for i, m in enumerate(medicos):
             print(f"{i} - {m.exibir_info()} | Esp: {m.especialidade}")
+
         idx_m = int(input("Escolha o médico: "))
         medico = medicos[idx_m]
 
+        # Data da consulta
         data = input("Data da consulta (dd/mm/aaaa): ")
+
         consulta = paciente.marcar_consulta(medico, data)
+
         consultas.append(consulta)
+
         print("Consulta marcada com sucesso!\n")
+
 
     # Listar Consultas
     elif opcao == "6":
-        ###### CRIE O CÓDIGO PARA LISTAR AS CONSULTAS
-        print()
+        if not consultas:
+            print("Nenhuma consulta cadastrada!\n")
+        else:
+            for consulta in consultas:
+                consulta.exibir_consulta()
+
 
     # Registrar Diagnóstico
     elif opcao == "7":
-        for i, c in enumerate(consultas):
-            print(f"{i} - {c.data} | Paciente: {c.paciente.nome} | Médico: {c.medico.nome}")
-        idx_c = int(input("Escolha a consulta: "))
-        diag = input("Digite o diagnóstico: ")
-        consultas[idx_c].registrar_diagnostico(diag)
-        print("Diagnóstico registrado!\n")
+        if not consultas:
+            print("Nenhuma consulta cadastrada!\n")
+        else:
+            for i, c in enumerate(consultas):
+                print(
+                    f"{i} - {c.data} | "
+                    f"Paciente: {c.paciente.nome} | "
+                    f"Médico: {c.medico.nome}"
+                )
+
+            idx_c = int(input("Escolha a consulta: "))
+
+            diag = input("Digite o diagnóstico: ")
+
+            consultas[idx_c].registrar_diagnostico(diag)
+
+            print("Diagnóstico registrado!\n")
+
 
     # Sair
     elif opcao == "0":
         print("Saindo...")
         break
 
+
+    # Opção inválida
     else:
         print("Opção inválida!\n")
